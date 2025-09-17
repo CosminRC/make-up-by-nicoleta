@@ -52,3 +52,27 @@ def create_booking(
         session.add(appt)
         session.commit()
     return RedirectResponse(url="/bookings", status_code=303)
+
+app.get("/admin")
+def admin_page(request: Request, token: str | None = None, q_day: str | None = None):
+    is_admin = (token == ADMIN_TOKEN)
+    items = []
+    if is_admin:
+        from sqlmodel import Session, select
+        from datetime import date
+        with Session(engine) as session:
+            stmt = select(Appointment)
+            if q_day:
+                stmt = stmt.where(Appointment.day == date.fromisoformat(q_day))
+            stmt = stmt.order_by(Appointment.day, Appointment.hour)
+            items = session.exec(stmt).all()
+    return templates.TemplateResponse(
+        "admin.html",
+        {"request": request, "is_admin": is_admin, "items": items, "q_day": q_day, "token": token or ""}
+    )
+
+@app.post("/admin/login")
+def admin_login(token: str = Form(...)):
+    if token != ADMIN_TOKEN:
+        return RedirectResponse(url="/admin", status_code=303)
+    return RedirectResponse(url=f"/admin?token={token}", status_code=303)
