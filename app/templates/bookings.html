@@ -1,0 +1,67 @@
+
+{% extends "base.html" %}
+{% block content %}
+  <div class="grid grid-2">
+    <section class="card">
+      <h2>Fă o programare</h2>
+      <form method="post" action="/book" style="display:grid;gap:10px;margin-top:8px;">
+        <div>
+          <label>Nume client</label>
+          <input name="client_name" required />
+        </div>
+        <div>
+          <label>Telefon</label>
+          <input name="phone" required />
+        </div>
+        <div>
+          <label>Serviciu</label>
+          <select name="service" required>
+            <option>Machiaj de zi</option>
+            <option>Machiaj de seară</option>
+            <option>Machiaj mireasă</option>
+            <option>Probă machiaj</option>
+          </select>
+        </div>
+        <div class="grid grid-2">
+          <div>
+            <label>Data</label>
+            <input type="date" name="day" required />
+          </div>
+          <div>
+            <label>Ora</label>
+            <input type="time" name="hour" required />
+          </div>
+        </div>
+        <div>
+          <label>Note (opțional)</label>
+          <textarea name="notes" rows="3"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Rezervă</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Programări</h2>
+      <form method="get" action="/bookings" style="display:flex;gap:8px;margin:8px 0;">
+        <input type="date" name="q_day" value="{{ q_day or '' }}" />
+        <button class="btn" type="submit">Filtrează după zi</button>
+      </form>
+      <table>
+        <thead><tr><th>Data</th><th>Ora</th><th>Client</th><th>Serviciu</th><th>Telefon</th></tr></thead>
+        <tbody>
+          {% for it in items %}
+          <tr>
+            <td>{{ it.day }}</td>
+            <td>{{ it.hour }}</td>
+            <td>{{ it.client_name }}</td>
+            <td>{{ it.service }}</td>
+            <td>{{ it.phone }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5">Nicio programare (încă) 🙂</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  </div>
+{% endblock %}

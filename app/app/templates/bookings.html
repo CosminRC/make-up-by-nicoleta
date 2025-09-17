@@ -1,0 +1,98 @@
+
+{% extends "base.html" %}
+{% block content %}
+  {% if msg %}
+    <div class="card" style="border-color:#f5c2c7;background:#f8d7da;">{{ msg }}</div>
+  {% endif %}
+  {% if ok %}
+    <div class="card" style="border-color:#bcd0ba;background:#d1e7dd;">{{ ok }}</div>
+  {% endif %}
+
+  <div class="grid grid-2">
+    <section class="card">
+      <h2>Fă o programare</h2>
+      <p style="margin:6px 0;color:#555;">Program: {{  '%02d' % 9 }}:00 – {{ '%02d' % 20 }}:00</p>
+      <form method="post" action="/book" style="display:grid;gap:10px;margin-top:8px;">
+        <div>
+          <label>Nume client</label>
+          <input name="client_name" required />
+        </div>
+        <div>
+          <label>Telefon</label>
+          <input name="phone" required />
+        </div>
+        <div>
+          <label>Serviciu</label>
+          <select name="service" required>
+            <option>Machiaj de zi</option>
+            <option>Machiaj de seară</option>
+            <option>Machiaj mireasă</option>
+            <option>Probă machiaj</option>
+          </select>
+        </div>
+        <div class="grid grid-2">
+          <div>
+            <label>Data</label>
+            <input type="date" name="day" required />
+          </div>
+          <div>
+            <label>Ora</label>
+            <input type="time" name="hour" required />
+          </div>
+        </div>
+        <div>
+          <label>Note (opțional)</label>
+          <textarea name="notes" rows="3"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Rezervă</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <h2>Programări</h2>
+        <form method="get" action="/bookings" style="display:flex;gap:8px;margin:8px 0;">
+          <input type="date" name="q_day" value="{{ q_day or '' }}" />
+          {% if token %}<input type="hidden" name="token" value="{{ token }}"/>{% endif %}
+          <button class="btn" type="submit">Filtrează</button>
+        </form>
+      </div>
+      <table>
+        <thead><tr><th>Data</th><th>Ora</th><th>Client</th><th>Serviciu</th><th>Telefon</th>{% if is_admin %}<th>Admin</th>{% endif %}</tr></thead>
+        <tbody>
+          {% for it in items %}
+          <tr>
+            <td>{{ it.day }}</td>
+            <td>{{ it.hour }}</td>
+            <td>{{ it.client_name }}</td>
+            <td>{{ it.service }}</td>
+            <td>{{ it.phone }}</td>
+            {% if is_admin %}
+            <td>
+              <form method="post" action="/delete/{{ it.id }}" onsubmit="return confirm('Ștergi programarea?')">
+                <input type="hidden" name="token" value="{{ token }}"/>
+                <button class="btn" type="submit">Șterge</button>
+              </form>
+            </td>
+            {% endif %}
+          </tr>
+          {% else %}
+          <tr><td colspan="{{ 5 + (1 if is_admin else 0) }}">Nicio programare (încă) 🙂</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {% if not is_admin %}
+        <div style="margin-top:10px;">
+          <form method="get" action="/bookings" style="display:flex;gap:8px;">
+            <input type="password" name="token" placeholder="Token admin" />
+            <button class="btn" type="submit">Login admin</button>
+          </form>
+          <p style="color:#666;font-size:.9rem;margin-top:6px;">Introdu token-ul pentru a activa acțiunile de admin (ștergere programări).</p>
+        </div>
+      {% else %}
+        <p style="color:#666;font-size:.9rem;margin-top:6px;">Ești logat ca admin.</p>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}

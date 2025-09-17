@@ -1,0 +1,43 @@
+
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ title if title else "Makeup by Nicoleta" }}</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;margin:0;padding:0;background:#fafafa;color:#111}
+    header,footer{background:white;position:sticky;top:0;z-index:10}
+    header{padding:14px 20px;box-shadow:0 1px 8px rgba(0,0,0,.06)}
+    main{max-width:980px;margin:24px auto;padding:0 16px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:1px solid #ddd;background:white;cursor:pointer}
+    .btn-primary{background:#111;color:#fff;border-color:#111}
+    .card{background:white;border:1px solid #eee;border-radius:14px;padding:16px;margin:12px 0}
+    .grid{display:grid;gap:16px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    label{font-size:.9rem;color:#444}
+    input,select,textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;background:white}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
+    .pill{padding:4px 8px;border-radius:999px;background:#f2f2f2}
+  </style>
+</head>
+<body>
+  <header>
+    <nav style="display:flex;gap:12px;align-items:center;justify-content:space-between;">
+      <div><strong>Makeup by Nicoleta</strong></div>
+      <div style="display:flex;gap:8px;">
+        <a class="btn" href="/">Acasă</a>
+        <a class="btn" href="/bookings">Programări</a>
+      </div>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer style="padding:20px;text-align:center;border-top:1px solid #eee;background:#fff;">
+    © {{ 2025 }} Makeup by Nicoleta · <span class="pill">București</span>
+  </footer>
+</body>
+</html>
